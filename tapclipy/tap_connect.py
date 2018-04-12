@@ -1,4 +1,4 @@
-from TapCliPy import queries
+from tapclipy import queries
 from urllib import request
 import json
 
