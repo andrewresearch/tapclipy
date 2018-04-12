@@ -43,10 +43,10 @@ class Connect:
         return self.__tap_connect(analyse_query)
 
     def __tap_connect(self, query):
-        json_header = {'Content-Type': 'application/json'}
-        tap_request = request.Request(self.__full_url, data=query.encode('utf8'), headers=json_header)
         try:
-            tap_response = request.urlopen(tap_request)„
+            json_header = {'Content-Type': 'application/json'}
+            tap_request = request.Request(self.__full_url, data=query.encode('utf8'), headers=json_header)
+            tap_response = request.urlopen(tap_request)
             body = tap_response.read().decode('utf8')
             self.__can_connect = True
             return json.loads(body)
