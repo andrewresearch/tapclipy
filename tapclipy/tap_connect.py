@@ -38,8 +38,8 @@ class Connect:
 
     def analyse_text(self, query, text):
         variables = {'input': text}
-        escaped_query = query.replace("\n", "\\n")  # query.encode('utf8').decode('unicode_escape')
-        analyse_query = json.dumps({'query': escaped_query, 'variables': variables})
+        #escaped_query = query.replace("\n", "\\n")  # query.encode('utf8').decode('unicode_escape')
+        analyse_query = json.dumps({'query': query, 'variables': variables})
         return self.__tap_connect(analyse_query)
 
     def __tap_connect(self, query):
