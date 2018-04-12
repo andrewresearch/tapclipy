@@ -3,6 +3,14 @@
 # TapCliPy
 Python Client Library for [TAP](https://github.com/heta-io/tap)
 
+### Installation
+
+Install with pip:
+
+```bash
+> pip install tapclipy
+```
+
 ### Basic Example
 
 ```python
