@@ -1,4 +1,4 @@
-[![https://img.shields.io/badge/license-Apache%202.0-blue.svg](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![PyPI version](https://badge.fury.io/py/tapclipy.svg)](https://badge.fury.io/py/tapclipy) [![https://img.shields.io/badge/license-Apache%202.0-blue.svg](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 # TapCliPy
 Python Client Library for [TAP](https://github.com/heta-io/tap)
