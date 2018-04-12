@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     name='tapclipy',
-    version='0.1.0',
-    packages=['TapCliPy'],
+    version='0.1.2',
+    packages=['tapclipy'],
     url='https://github.com/infosci-qut/tapclipy',
     license='Apache 2.0',
     author='andrewresearch',
