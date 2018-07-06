@@ -20,7 +20,7 @@ parameters['clean'] = '''
 
 query['metrics'] = '''
 query Metrics($input: String,$parameters:String) { 
-    clean(text:$input,parameters:$parameters) {
+    metrics(text:$input,parameters:$parameters) {
         analytics {
             words
             sentences
@@ -67,7 +67,7 @@ query Annotations($input: String,$parameters:String) {
 
 parameters['annotations'] = '''
 {
-    "pipeType":"CLU"
+    "pipeType":"clu"
 }
 '''
 
