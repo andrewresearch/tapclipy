@@ -1,34 +1,79 @@
 query = dict()
+parameters = dict()
 
-query['metrics'] = "query Metrics($input: String!){ metrics(text: $input) { analytics {words, sentences, sentWordCounts, averageSentWordCount } } }"
+query['clean'] = '''
+query Clean($input: String,$parameters:String) { 
+    clean(text:$input,parameters:$parameters) {
+        analytics
+        querytime
+        message
+        timestamp    
+    }
+}    
+'''
+
+parameters['clean'] = '''
+{
+    "cleanType":"minimal"
+}
+'''
+
+query['metrics'] = '''
+query Metrics($input: String,$parameters:String) { 
+    metrics(text:$input,parameters:$parameters) {
+        analytics {
+            words
+            sentences
+            sentWordCounts
+            averageSentWordCount 
+        }
+        querytime
+        message
+        timestamp    
+    }
+}    
+'''
+
+parameters['metrics'] = '''
+{}
+'''
+
 
 query['annotations'] = '''
-query TokeniseWithCLU($input: String!) {
-annotations(text:$input,pipetype:"clu") {
-    analytics {
-      idx
-      start
-      end
-      length
-      tokens {
-        idx
-        term
-        lemma
-        postag
-        parent
-        children
-        deptype
-        nertag
-      }
+query Annotations($input: String,$parameters:String) {
+    annotations(text:$input,parameters:$parameters) {
+        analytics {
+          idx
+          start
+          end
+          length
+          tokens {
+            idx
+            term
+            lemma
+            postag
+            parent
+            children
+            deptype
+            nertag
+          }
+        }
+        querytime
+        message
+        timestamp
     }
-    timestamp
-  }
-  }
+}
+'''
+
+parameters['annotations'] = '''
+{
+    "pipeType":"clu"
+}
 '''
 
 query['expressions'] = '''
-query Expressions($input:String!) {
-  expressions(text:$input) {
+query Expressions($input: String,$parameters:String) {
+  expressions(text:$input,parameters:$parameters) {
     analytics {
       sentIdx
       affect{
@@ -47,9 +92,39 @@ query Expressions($input:String!) {
 }
 '''
 
+parameters['expressions'] = '''
+{}
+'''
+
+query['affectExpressions'] = '''
+query AffectExpressions($input: String,$parameters:String) { 
+    affectExpressions(text:$input,parameters:$parameters) { 
+        querytime
+        message
+        timestamp
+        analytics {
+            affect {
+                text
+                valence
+                arousal
+                dominance
+                startIdx
+            }
+        }
+    }}
+'''
+
+parameters['affectExpressions'] = '''
+{
+    "valence":0,
+    "arousal":4,
+    "dominance":0
+}
+'''
+
 query['reflectExpressions'] = '''
-query ReflectExpressions($input:String!) {
-  reflectExpressions(text:$input) {
+query ReflectExpressions($input: String,$parameters:String) {
+  reflectExpressions(text:$input,parameters:$parameters) {
     querytime
     analytics {
       counts {
@@ -92,9 +167,13 @@ query ReflectExpressions($input:String!) {
 }
 '''
 
+parameters['reflectExpressions'] = '''
+{}
+'''
+
 query['vocabulary'] = '''
-query Vocab($input: String!) {
-  vocabulary(text:$input){
+query Vocab($input: String,$parameters:String) {
+  vocabulary(text:$input,parameters:$parameters){
     analytics {
       unique
       terms {
@@ -107,9 +186,13 @@ query Vocab($input: String!) {
 }
 '''
 
+parameters['vocabulary'] = '''
+{}
+'''
+
 query['posStats'] = '''
-query PosStats($input:String!){
-  posStats(text:$input) {
+query PosStats($input: String,$parameters:String){
+  posStats(text:$input,parameters:$parameters) {
     analytics {
       verbNounRatio
       futurePastRatio
@@ -123,9 +206,13 @@ query PosStats($input:String!){
 }
 '''
 
+parameters['posStats'] = '''
+{}
+'''
+
 query['syllables'] = '''
-query Syllables($input:String!) {
-  syllables(text:$input) {
+query Syllables($input: String,$parameters:String) {
+  syllables(text:$input,parameters:$parameters) {
     analytics {
       sentIdx
       avgSyllables
@@ -136,9 +223,13 @@ query Syllables($input:String!) {
 }
 '''
 
+parameters['syllables'] = '''
+{}
+'''
+
 query['spelling'] = '''
-query Spelling($input:String!) {
-  spelling(text:$input) {
+query Spelling($input: String,$parameters:String) {
+  spelling(text:$input,parameters:$parameters) {
     timestamp
     message
     querytime
@@ -152,6 +243,27 @@ query Spelling($input:String!) {
       }
     }
   }
+}
+'''
+
+parameters['spelling'] = '''
+{}
+'''
+
+query['moves'] = '''
+query Moves($input: String,$parameters:String) { 
+    moves(text:$input,parameters:$parameters) { 
+        querytime
+        message
+        timestamp
+        analytics
+    }
+} 
+'''
+
+parameters['moves'] = '''
+{
+    "grammar":"reflective"
 }
 '''
 

@@ -23,6 +23,10 @@ class Connect:
         else:
             return ""
 
+    def parameters(self, name):
+        if name in self.__current_query_name_types:
+            return queries.parameters[name]
+
     def fetch_schema(self):
         schema_query = json.dumps({'query': queries.query['schema']})
         jbody = self.__tap_connect(schema_query)
@@ -36,8 +40,8 @@ class Connect:
                 self.__current_query_name_types[name] = field['type']['ofType']['name']
             return self.__current_schema
 
-    def analyse_text(self, query, text):
-        variables = {'input': text}
+    def analyse_text(self, query, text, parameters=''):
+        variables = {'input': text,'parameters': parameters}
         #escaped_query = query.replace("\n", "\\n")  # query.encode('utf8').decode('unicode_escape')
         analyse_query = json.dumps({'query': query, 'variables': variables})
         return self.__tap_connect(analyse_query)
