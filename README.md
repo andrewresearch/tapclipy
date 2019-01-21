@@ -3,6 +3,34 @@
 # TapCliPy
 Python Client Library for [TAP](https://github.com/heta-io/tap)
 
+# What is Tap Client?
+The Tap client is a python library for accessing [TAP](https://github.com/heta-io/tap) (Text Analytics Pipeline)
+This allows you to use all the available queries easily from python or command line.
+
+# Benefits of Tap Client
+- The client can be hosted online enabling large scale development
+- The client can be run with the command line enabling you to pipe the output to any other applications you need.
+- The ability to chain multiple queries together and pass in the results from one queries into another.
+- The ability to batch queries together and analyse hundreds if not thousands of documents hosted on an s3 bucket.
+
+# Who Uses Tap?
+Tap is used by many organisations to analyse large volumes of text and provide analytics on the types of language used. 
+This is useful for analysing feedback and/ or surveys provided by staff or students and provide useful information.
+
+# Frequently Asked Questions
+
+## Can i use it locally?
+Sure can, You are able to run TAP using Docker locally or even just run it on command line. See the current docs [here](https://heta-io.github.io/tap/overview/quick_start.html#get-started-locally-without-docker)
+
+## Can i host it online?
+Sure can, You are able to host it online with a simple Droplet from Digital Ocean, AWS or any hosted Docker instance. See the current docs [here](https://heta-io.github.io/tap/overview/quick_start.html#run-docker-on-digital-ocean)
+
+## Is the client required to use TAP?
+Nope, The client enables you to easily interact with TAP, however it is not required to use and run queries with TAP. You can interact with TAP using the command line or using the GraphQl interface. See the [TAP docs](https://heta-io.github.io/tap/index.html) for more info
+
+## Does Tap client scale well?
+Yes! It scales very well and is able to batch many queries together and process large volumes of data asynchronously.
+
 ### Installation
 
 Install with pip:
