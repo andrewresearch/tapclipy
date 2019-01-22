@@ -268,6 +268,26 @@ parameters['moves'] = '''
 '''
 
 
+query['batch'] = '''
+query Batch($input: String,$parameters:String) { 
+    batch(text:$input,parameters:$parameters) { 
+        querytime
+        message
+        timestamp
+        analytics
+    }
+} 
+'''
+
+parameters['batch'] = '''
+{
+    "analysisType": "clean",
+    "s3bucket": "bucketname",
+    "progressCheck": "id?"
+}
+'''
+
+
 query['schema'] = '''
     { __schema { queryType { name ...subtypes } } }
     fragment subtypes on __Type { fields {
