@@ -269,8 +269,8 @@ parameters['moves'] = '''
 
 
 query['batch'] = '''
-query Batch($input: String,$parameters:String) { 
-    batch(text:$input,parameters:$parameters) { 
+query Batch($parameters:String) { 
+    batch(parameters:$parameters) { 
         querytime
         message
         timestamp
@@ -281,9 +281,9 @@ query Batch($input: String,$parameters:String) {
 
 parameters['batch'] = '''
 {
-    "analysisType": "clean",
-    "s3bucket": "bucketname",
-    "progressCheck": "id?"
+    "analysisType": "reflectExpressions",
+    "s3bucket": "",
+    "progressCheck": ""
 }
 '''
 
