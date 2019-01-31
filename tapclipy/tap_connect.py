@@ -47,6 +47,19 @@ class Connect:
         analyse_query = json.dumps({'query': query, 'variables': variables})
         return self.__tap_connect(analyse_query)
 
+    def get_tags(self, tags):
+        phrases = []
+
+        for data in tags:
+
+            # loop phrase tags
+            for phrase in data['phrases']:
+                tag = re.search("\[([a-zA-Z]+),", phrase).group(1)
+                if tag not in phrases:
+                    phrases.append(tag)
+
+        return phrases
+
     def process_sentences(self, tags):
 
         # create empty array to hold completed sentences
@@ -54,6 +67,7 @@ class Connect:
 
         # loop tag data
         for data in tags:
+
             # get copy of sentence we are working on
             newString = data['sentence']
 
@@ -61,8 +75,7 @@ class Connect:
             for phrase in data['phrases']:
                 capturedPhrase = re.search("^([a-z A-Z']+)\[", phrase).group(1)
                 tag = re.search("\[([a-zA-Z]+),", phrase).group(1)
-                print(tag)
-                newString = newString.lower().replace(capturedPhrase, "<span class='badge'>{word}</span>".format(word=capturedPhrase))
+                newString = newString.lower().replace(capturedPhrase, "<span class='badge {tagType}'>{word}</span>".format(word=capturedPhrase, tagType=tag.lower()))
             sentences.append(newString)
 
         return sentences
@@ -73,6 +86,7 @@ class Connect:
         counts = analytics['counts']
 
         sentences = self.process_sentences(analytics['tags'])
+        tags = self.get_tags(analytics['tags'])
 
         wordCount = counts['wordCount']
 
@@ -83,9 +97,13 @@ class Connect:
         avgSentenceLength = counts['avgSentenceLength']
 
         sentenceRows = ""
+        tagRow = ""
 
         for i in range(len(sentences)):
             sentenceRows += "<tr><td>{count}</td><td>{sen}</td><td>nil</td></tr>".format(count=(i + 1), sen=sentences[i])
+
+        for tag in tags:
+            tagRow += "<span class='badge {t}'>{ta}</span>".format(t=tag.lower(), ta=tag)
 
         style = '''
         <style type="text/css" media="screen">
@@ -114,6 +132,33 @@ class Connect:
                 display: table;
                 clear: both;
             }
+            .anticipate{
+                background-color: red;
+            }
+            .compare{
+                background-color: blue;
+            }
+            .consider{
+                background-color: green;
+            }
+            .definite{
+                background-color: aqua;
+            }
+            .generalpronounverb {
+                background-color: cadetblue;
+            }
+            .grouppossessive{
+                background-color: gold;
+            }
+            .pertains{
+                background-color: blueviolet;
+            }
+            .selfpossessive{
+                background-color: brown;
+            }            
+            .selfreflexive{
+                background-color: chocolate;
+            }
             
         </style>
         
@@ -121,6 +166,11 @@ class Connect:
 
         output = style + """
         <h1>Results from Query</h1>
+        <br />
+        <div class="tagHolder">
+        {tagrow}
+        </div>
+        
         <br />
         <div class="row">
             <div class="column1">
@@ -163,7 +213,8 @@ class Connect:
             wordlength="{0:.2f} characters".format(avgWordLength),
             sentencecount="{0} sentences".format(sentenceCount),
             avgsentencelength="{0} words".format(avgSentenceLength),
-            sentencerows=sentenceRows
+            sentencerows=sentenceRows,
+            tagrow=tagRow
         )
 
         return output
