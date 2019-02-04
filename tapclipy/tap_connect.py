@@ -60,7 +60,7 @@ class Connect:
 
         return phrases
 
-    def process_sentences(self, tags):
+    def process_sentences(self, tags, style):
 
         # create empty array to hold completed sentences
         sentences = []
@@ -75,37 +75,31 @@ class Connect:
             for phrase in data['phrases']:
                 capturedPhrase = re.search("^([a-z A-Z']+)\[", phrase).group(1)
                 tag = re.search("\[([a-zA-Z]+),", phrase).group(1)
-                newString = newString.lower().replace(capturedPhrase, "<span class='badge {tagType}'>{word}</span>".format(word=capturedPhrase, tagType=tag.lower()))
+                if tag in style:
+                    newString = newString.lower().replace(capturedPhrase, "<span class='badge {tagType}'>{word}</span>".format(word=capturedPhrase, tagType=tag.lower()))
+                else:
+                    newString = newString.lower().replace(capturedPhrase, "<span class='{tagType}'>{word}</span>".format(word=capturedPhrase, tagType=tag.lower()))
             sentences.append(newString)
 
         return sentences
 
-    def markup(self, text, results):
+    # a function that you can pass an array of css rules to?
+    def make_css(self, customStyle):
+        styles = ""
+        if customStyle is not None:
+            for key in customStyle:
+                rules = ""
+                for rule in customStyle[key]:
+                    rules += "  " + rule + ": " + customStyle[key][rule] + ";\n"
+                styles += "." + key + "{\n" + rules + "}\n"
 
-        analytics = results['data']['reflectExpressions']['analytics']
-        counts = analytics['counts']
+        return '''
+        <style type="text/css" media="screen">
+            {custom_styles}
+        </style>        
+        '''.format(tableStyle=tableStyle, custom_styles=styles)
 
-        sentences = self.process_sentences(analytics['tags'])
-        tags = self.get_tags(analytics['tags'])
-
-        wordCount = counts['wordCount']
-
-        avgWordLength = counts["avgWordLength"]
-
-        sentenceCount = counts['sentenceCount']
-
-        avgSentenceLength = counts['avgSentenceLength']
-
-        sentenceRows = ""
-        tagRow = ""
-
-        for i in range(len(sentences)):
-            sentenceRows += "<tr><td>{count}</td><td>{sen}</td><td>nil</td></tr>".format(count=(i + 1), sen=sentences[i])
-
-        for tag in tags:
-            tagRow += "<span class='badge {t}'>{ta}</span>".format(t=tag.lower(), ta=tag)
-
-        style = '''
+    def create_table(self, text, results, style='''
         <style type="text/css" media="screen">
         
             .rendered_html th, .rendered_html td {
@@ -160,9 +154,118 @@ class Connect:
                 background-color: chocolate;
             }
             
-        </style>
+        </style>        
+        '''):
+        # styling for the table
+        tableStyle = """
+                    .rendered_html th, .rendered_html td {
+                        text-align: left;        
+                    }
+                    .rendered_html table, .rendered_html th, .rendered_html td {
+                        border: 1px solid black;
+                        border-collapse: collapse;            
+                    }
+                    .rendered_html table {
+                        table-layout: auto;
+                    }
+                    .rendered_html .column1 {
+                        float: left;
+                        width: 60%;
+                        margin-right: 10px;
+                    }
+                    .rendered_html .column2 {
+                        float: left;
+                        width: 35%;
+                    }
+                    .rendered_html .row:after {
+                        content:"";
+                        display: table;
+                        clear: both;
+                    }            
+                """
+
+    # we pass in default style if they do not pass any.
+    def markup(self, text, results, style='''
+        <style type="text/css" media="screen">
         
-        '''
+            .rendered_html th, .rendered_html td {
+                text-align: left;        
+            }
+            .rendered_html table, .rendered_html th, .rendered_html td {
+                border: 1px solid black;
+                border-collapse: collapse;            
+            }
+            .rendered_html table {
+                table-layout: auto;
+            }
+            .rendered_html .column1 {
+                float: left;
+                width: 60%;
+                margin-right: 10px;
+            }
+            .rendered_html .column2 {
+                float: left;
+                width: 35%;
+            }
+            .rendered_html .row:after {
+                content:"";
+                display: table;
+                clear: both;
+            }
+            .anticipate{
+                background-color: red;
+            }
+            .compare{
+                background-color: blue;
+            }
+            .consider{
+                background-color: green;
+            }
+            .definite{
+                background-color: aqua;
+            }
+            .generalpronounverb {
+                background-color: cadetblue;
+            }
+            .grouppossessive{
+                background-color: gold;
+            }
+            .pertains{
+                background-color: blueviolet;
+            }
+            .selfpossessive{
+                background-color: brown;
+            }            
+            .selfreflexive{
+                background-color: chocolate;
+            }
+            
+        </style>        
+        '''):
+
+        analytics = results['data']['reflectExpressions']['analytics']
+        counts = analytics['counts']
+
+        sentences = self.process_sentences(analytics['tags'], style)
+        tags = self.get_tags(analytics['tags'])
+
+        wordCount = counts['wordCount']
+
+        avgWordLength = counts["avgWordLength"]
+
+        sentenceCount = counts['sentenceCount']
+
+        avgSentenceLength = counts['avgSentenceLength']
+
+        sentenceRows = ""
+        tagRow = ""
+
+        for i in range(len(sentences)):
+            sentenceRows += "<tr><td>{count}</td><td>{sen}</td><td>nil</td></tr>".format(count=(i + 1), sen=sentences[i])
+
+        for tag in tags:
+            if tag in style:
+                tagRow += "<span class='badge {t}'>{ta}</span>".format(t=tag.lower(), ta=tag)
 
         output = style + """
         <h1>Results from Query</h1>
