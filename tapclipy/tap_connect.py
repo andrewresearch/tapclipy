@@ -47,7 +47,7 @@ class Connect:
         analyse_query = json.dumps({'query': query, 'variables': variables})
         return self.__tap_connect(analyse_query)
 
-    def process_sentences(self, tags):
+    def process_sentences(self, tags, customClass=""):
 
         # create empty array to hold completed sentences
         sentences = []
@@ -62,7 +62,11 @@ class Connect:
             for phrase in data['phrases']:
                 capturedPhrase = re.search("^([a-z A-Z']+)\[", phrase).group(1)
                 tag = re.search("\[([a-zA-Z]+),", phrase).group(1)
-                newString = newString.lower().replace(capturedPhrase,
+
+                if customClass is not "":
+                    newString = newString.lower().replace(capturedPhrase, "<span class='{tagType} {custom}'>{word}</span>".format( word=capturedPhrase, tagType=tag.lower(), custom=customClass))
+                else:
+                    newString = newString.lower().replace(capturedPhrase,
                                                       "<span class='{tagType}'>{word}</span>".format(
                                                           word=capturedPhrase, tagType=tag.lower()))
 
@@ -81,10 +85,11 @@ class Connect:
 
         return styles
 
-    def make_html(self, result_data):
+    def make_html(self, result_data, custom_class=""):
         output = ""
         analytics = result_data['data']['reflectExpressions']['analytics']
-        sentences = self.process_sentences(analytics['tags'])
+
+        sentences = self.process_sentences(analytics['tags'], custom_class)
 
         for sentence in sentences:
             output += sentence
