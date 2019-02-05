@@ -85,6 +85,74 @@ class Connect:
 
         return styles
 
+    def make_table_html(self, result_data, custom_class=""):
+
+        analytics = result_data['data']['reflectExpressions']['analytics']
+
+        counts = analytics['counts']
+
+        sentences = self.process_sentences(analytics['tags'], custom_class)
+
+        word_count = counts['wordCount']
+
+        avg_word_length = counts["avgWordLength"]
+
+        sentence_count = counts['sentenceCount']
+
+        avg_sentence_length = counts['avgSentenceLength']
+
+        sentence_rows = ""
+
+        for i in range(len(sentences)):
+            sentence_rows += "<tr><td>{count}</td><td>{sen}</td><td>nil</td></tr>".format(count=(i + 1), sen=sentences[i])
+
+        output = """                
+                <div class="row">
+                    <div class="column1">
+                        <table style="width:100%">
+                            <tr>
+                                <th>No</th>
+                                <th>Sentence</th>
+                                <th>Meta Tags</th>
+                            </tr>
+                            {sentencerows}
+                        </table>            
+                    </div>
+                    <div class="column2">
+                        <table style="width:100%">
+                            <tr>
+                                <th>Summary</th>
+                                <th></th>                
+                            </tr>
+                            <tr>
+                                <td>Word Count</td>
+                                <td>{wordcount}</td>                
+                            </tr>
+                            <tr>
+                                <td>Avg Word Length</td>
+                                <td>{wordlength}</td>                
+                            </tr>
+                            <tr>
+                                <td>Sentence Count</td>
+                                <td>{sentencecount}</td>                
+                            </tr>
+                            <tr>
+                                <td>Avg Sentence Length</td>
+                                <td>{avgsentencelength}</td>                
+                            </tr>
+                        </table>
+                    </div>
+                </div>   
+                """.format(
+            wordcount="{0} words".format(word_count),
+            wordlength="{0:.2f} characters".format(avg_word_length),
+            sentencecount="{0} sentences".format(sentence_count),
+            avgsentencelength="{0} words".format(avg_sentence_length),
+            sentencerows=sentence_rows
+        )
+
+        return output
+
     def make_html(self, result_data, custom_class=""):
         output = ""
         analytics = result_data['data']['reflectExpressions']['analytics']
@@ -95,6 +163,34 @@ class Connect:
             output += sentence
 
         return output
+
+    def get_table_css(self):
+        return """
+            .rendered_html th, .rendered_html td {
+                text-align: left;        
+            }
+            .rendered_html table, .rendered_html th, .rendered_html td {
+                border: 1px solid black;
+                border-collapse: collapse;            
+            }
+            .rendered_html table {
+                table-layout: auto;
+            }
+            .rendered_html .column1 {
+                float: left;
+                width: 60%;
+                margin-right: 10px;
+            }
+            .rendered_html .column2 {
+                float: left;
+                width: 35%;
+            }
+            .rendered_html .row:after {
+                content:"";
+                display: table;
+                clear: both;
+            }
+        """
 
     def markup(self, html, css="""
             .anticipate{
