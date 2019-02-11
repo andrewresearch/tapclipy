@@ -3,7 +3,7 @@ import re
 
 class Effects:
 
-    def __sentences_to_html(self, tags, customClass=""):
+    def __reflect_sentences_to_html(self, tags, customClass=""):
 
         # create empty array to hold completed sentences
         sentences = []
@@ -22,9 +22,7 @@ class Effects:
                 if customClass is not "":
                     newString = newString.lower().replace(capturedPhrase, "<span class='{tagType} {custom}'>{word}</span>".format( word=capturedPhrase, tagType=tag.lower(), custom=customClass))
                 else:
-                    newString = newString.lower().replace(capturedPhrase,
-                                                      "<span class='{tagType}'>{word}</span>".format(
-                                                          word=capturedPhrase, tagType=tag.lower()))
+                    newString = newString.lower().replace(capturedPhrase, "<span class='{tagType}'>{word}</span>".format(word=capturedPhrase, tagType=tag.lower()))
 
             sentences.append(newString)
 
@@ -47,7 +45,7 @@ class Effects:
 
         counts = analytics['counts']
 
-        sentences = self.__sentences_to_html(analytics['tags'], custom_class)
+        sentences = self.__reflect_sentences_to_html(analytics['tags'], custom_class)
 
         word_count = counts['wordCount']
 
@@ -109,27 +107,39 @@ class Effects:
 
         return output
 
-    def make_affect_html(self, affect_data, custom_class=""):
+    def make_affect_html(self, input_text, affect_data, custom_class=""):
 
-        output = ""
         analytics = affect_data['data']['affectExpressions']['analytics']
+
+        string = input_text
+        replace_words = []
 
         for sentence in analytics:
             for affect in sentence['affect']:
-                style = "color:blue;"
                 text = affect['text']
                 valence = affect['valence']
                 arousal = affect['arousal']
                 dominance = affect['dominance']
-                output += "<span style={style}> {0} </span>".format(text, style=style)
 
-        return output
+                word_color = "rgb({r},{g},{b})".format(r=(255 * (valence / 10)), g=0, b=(255 * (1 - (valence / 10))))
+                word_weight = 900 * (arousal / 10)
+                word_size = 20 * (dominance / 10)
+                if text not in replace_words:
+                    replace_words.append(text)
+                    if custom_class is not "":
+                        string = string.replace(text, "<span class={custom} style='color:{wc}; font-size:{ws}px; font-weight:{ww};'> {word} </span>".format( word=text, wc=word_color, ws=word_size, ww=word_weight, custom=custom_class))
+                    else:
+                        string = string.replace(text,
+                                                "<span style='color:{wc}; font-size:{ws}px; font-weight:{ww};'> {word} </span>".format(
+                                                    word=text, wc=word_color, ws=word_size, ww=word_weight))
+
+        return string
 
     def make_reflect_html(self, result_data, custom_class=""):
         output = ""
         analytics = result_data['data']['reflectExpressions']['analytics']
 
-        sentences = self.__sentences_to_html(analytics['tags'], custom_class)
+        sentences = self.__reflect_sentences_to_html(analytics['tags'], custom_class)
 
         for sentence in sentences:
             output += sentence
