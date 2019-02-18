@@ -174,6 +174,22 @@ class Effects:
             }
         """
 
+    def make_vocab_graph(self, affect_data):
+
+        graph_data = dict()
+
+        labels = []
+        values = []
+
+        for term in affect_data['data']['vocabulary']['analytics']['terms']:
+            if term['term'] is not "." and term['term'] is not ",":
+                labels.append(term['term'])
+                values.append(term['count'])
+
+        graph_data['labels'] = labels
+        graph_data['values'] = values
+        return graph_data
+
     def markup(self, html, css="""
             .anticipate{
                 background-color: red;
