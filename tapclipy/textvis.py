@@ -148,26 +148,26 @@ class Effects:
 
     def get_table_css(self):
         return """
-            .rendered_html th, .rendered_html td {
+            .rendered_html th, .rendered_html td, th, td {
                 text-align: left;        
             }
-            .rendered_html table, .rendered_html th, .rendered_html td {
+            .rendered_html table, .rendered_html th, .rendered_html td, table, th, td {
                 border: 1px solid black;
                 border-collapse: collapse;            
             }
-            .rendered_html table {
+            .rendered_html table, table {
                 table-layout: auto;
             }
-            .rendered_html .column1 {
+            .rendered_html .column1, .column1 {
                 float: left;
                 width: 60%;
                 margin-right: 10px;
             }
-            .rendered_html .column2 {
+            .rendered_html .column2, .column2 {
                 float: left;
                 width: 35%;
             }
-            .rendered_html .row:after {
+            .rendered_html .row:after, .row:after {
                 content:"";
                 display: table;
                 clear: both;
