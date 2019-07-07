@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='tapclipy',
-    version='0.2.1',
+    version='0.2.2',
     packages=['tapclipy'],
     url='https://github.com/infosci-qut/tapclipy',
     license='Apache 2.0',
