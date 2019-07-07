@@ -7,7 +7,8 @@ query Clean($input: String,$parameters:String) {
         analytics
         querytime
         message
-        timestamp    
+        timestamp   
+        authority 
     }
 }    
 '''
@@ -27,6 +28,7 @@ query Metrics($input: String,$parameters:String) {
             sentWordCounts
             averageSentWordCount 
         }
+        authority
         querytime
         message
         timestamp    
@@ -59,6 +61,7 @@ query Annotations($input: String,$parameters:String) {
           }
         }
         querytime
+        authority
         message
         timestamp
     }
@@ -74,6 +77,7 @@ parameters['annotations'] = '''
 query['expressions'] = '''
 query Expressions($input: String,$parameters:String) {
   expressions(text:$input,parameters:$parameters) {
+    authority
     analytics {
       sentIdx
       affect{
@@ -102,6 +106,7 @@ query AffectExpressions($input: String,$parameters:String) {
         querytime
         message
         timestamp
+        authority
         analytics {
             affect {
                 text
@@ -126,6 +131,7 @@ query['reflectExpressions'] = '''
 query ReflectExpressions($input: String,$parameters:String) {
   reflectExpressions(text:$input,parameters:$parameters) {
     querytime
+    authority
     analytics {
       counts {
         wordCount
@@ -174,6 +180,7 @@ parameters['reflectExpressions'] = '''
 query['vocabulary'] = '''
 query Vocab($input: String,$parameters:String) {
   vocabulary(text:$input,parameters:$parameters){
+    authority
     analytics {
       unique
       terms {
@@ -193,6 +200,7 @@ parameters['vocabulary'] = '''
 query['posStats'] = '''
 query PosStats($input: String,$parameters:String){
   posStats(text:$input,parameters:$parameters) {
+    authority
     analytics {
       verbNounRatio
       futurePastRatio
@@ -213,6 +221,7 @@ parameters['posStats'] = '''
 query['syllables'] = '''
 query Syllables($input: String,$parameters:String) {
   syllables(text:$input,parameters:$parameters) {
+    authority
     analytics {
       sentIdx
       avgSyllables
@@ -232,6 +241,7 @@ query Spelling($input: String,$parameters:String) {
   spelling(text:$input,parameters:$parameters) {
     timestamp
     message
+    authority
     querytime
     analytics {
       sentIdx
@@ -253,6 +263,7 @@ parameters['spelling'] = '''
 query['moves'] = '''
 query Moves($input: String,$parameters:String) { 
     moves(text:$input,parameters:$parameters) { 
+        authority
         querytime
         message
         timestamp
@@ -272,6 +283,7 @@ query['batch'] = '''
 query Batch($parameters:String) { 
     batch(parameters:$parameters) { 
         querytime
+        authority
         message
         timestamp
         analytics
